@@ -348,7 +348,7 @@ const Game = ({ currentLevel }) => {
     }
   }, [isComputerNext, gameStart]);
 
-  useEffect(()=>{setValue(currentLevel === "Level 1" ? [Array(9).fill(null)] : [Array(25).fill(null)])},[currentLevel])
+  useEffect(()=>{handleReset()},[currentLevel])
 
   const handleReturn = (value) => {
     if (value.length === 1) {
