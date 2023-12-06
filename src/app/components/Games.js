@@ -346,7 +346,7 @@ const Game = ({ currentLevel }) => {
         clearTimeout(timeOutId);
       };
     }
-  }, [isComputerNext, gameStart, computeGame]);
+  }, [isComputerNext, gameStart]);
 
   const handleReturn = (value) => {
     if (value.length === 1) {
