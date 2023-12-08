@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-scroll";
+import ToggleLanguage from "./ToggleLanguage";
 import useTheme from "../hooks/useTheme";
 import animation from "./animation";
 
-const Navbar = () => {
+const Navbar = ({t}) => {
   const { theme, setTheme } = useTheme();
   const [icon, setIcon] = useState(theme === "dark" ? "bi-sun" : "bi-moon");
   const handleSetTheme = () => {
@@ -16,41 +17,7 @@ const Navbar = () => {
         <div className="d-flex justify-content-between pt-3">
           <div className="fs-3 animated">Obobo Victor</div>
           <div className="d-flex ">
-            <div className="dropdown">
-              <button
-                className="btn btn-secondary dropdown-toggle"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style={{ color: "#adb5bd" }}
-              >
-                <span>en</span>
-                <i id="language" className="bi bi-globe"></i>
-              </button>
-
-              <ul className="dropdown-menu">
-                <li>
-                  <button className="dropdown-item" href="../index.html">
-                    en
-                  </button>
-                </li>
-                {/* <li>
-                  <button className="dropdown-item" href="../ru/index.html">
-                    ru
-                  </button>
-                </li>
-                <li>
-                  <button className="dropdown-item" href="../es/index.html">
-                    es
-                  </button>
-                </li>
-                <li>
-                  <button className="dropdown-item" href="../fr/index.html">
-                    fr
-                  </button>
-                </li> */}
-              </ul>
-            </div>
-
+           <ToggleLanguage />
             <button
               className="btn ms-1"
               onClick={handleSetTheme}
@@ -69,7 +36,7 @@ const Navbar = () => {
               duration={100}
               offset={-120}
             >
-              Home
+              {t("common:navigation.1")}
             </Link>
             <Link
               to="expertise"
@@ -78,7 +45,7 @@ const Navbar = () => {
               duration={100}
               offset={-120}
             >
-              Expertise
+              {t("common:navigation.2")}
             </Link>
             <Link
               to="projects"
@@ -87,7 +54,7 @@ const Navbar = () => {
               duration={100}
               offset={-120}
             >
-              Projects
+              {t("common:navigation.3")}
             </Link>
             <Link
               to="contacts"
@@ -96,7 +63,7 @@ const Navbar = () => {
               duration={100}
               offset={-120}
             >
-              Contacts
+              {t("common:navigation.4")}
             </Link>
           </div>
         </nav>

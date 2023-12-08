@@ -7,7 +7,7 @@ const pythonProjects = [
     link: "https://cinemadb.onrender.com/docs",
   },
   {
-    title: "movieAPI",
+    title: "musicAPI",
     skills: ["Python", "DRF"],
     description: "Backend in Django Rest for mobile music app.",
   },

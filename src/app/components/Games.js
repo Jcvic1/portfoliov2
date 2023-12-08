@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import animation from "./animation";
+import { useMediaQuery } from "react-responsive";
 
 const Circle = ({ value, winCircleColor, handleClick }) => {
   return (
@@ -302,20 +302,21 @@ const Board = ({ value, currentLevel, winCircle, header, onHandleClick }) => {
   );
 };
 
-const Game = ({ currentLevel }) => {
+const Game = ({ currentLevel, t, updateReturn }) => {
   const [value, setValue] = useState(
     currentLevel === "Level 1" ? [Array(9).fill(null)] : [Array(25).fill(null)]
   );
   const [xNext, setXNext] = useState(true);
   const [lastXNext, setlastXNext] = useState(true);
-  const [xName, setXName] = useState("");
-  const [oName, setOName] = useState("");
   const [playerX, setPlayerX] = useState("X");
   const [playerO, setPlayerO] = useState("O");
   const [gameStart, setGameStart] = useState(false);
   const [isComputerNext, setIsComputerNext] = useState(false);
   const [isComputerPlaying, setIsComputerPlaying] = useState(false);
   const [lastComputerNext, setLastComputerNext] = useState(false);
+  const [totalReturn, setTotalReturn] = useState(
+    currentLevel === "Level 1" ? 1 : 3
+  );
 
   const currentValue = value[value.length - 1];
 
@@ -348,18 +349,17 @@ const Game = ({ currentLevel }) => {
     }
   }, [isComputerNext, gameStart]);
 
-  useEffect(()=>{handleReset()},[currentLevel])
+  useEffect(() => {
+    handleReset();
+    setTotalReturn(currentLevel === "Level 1" ? 1 : 3);
+  }, [currentLevel]);
 
   const handleReturn = (value) => {
-    if (value.length === 1) {
-      return;
-    }
+    if (totalReturn === 0) return;
+    setTotalReturn(totalReturn - 1);
+    updateReturn(totalReturn - 1);
 
-    value.pop();
-
-    setXNext(!xNext);
-
-    setValue([...value]);
+    setValue([...value.slice(0, -2)]);
   };
 
   const handleReset = () => {
@@ -373,6 +373,9 @@ const Game = ({ currentLevel }) => {
         : [Array(25).fill(null)]
     );
 
+    setTotalReturn(currentLevel === "Level 1" ? 1 : 3);
+    updateReturn(currentLevel === "Level 1" ? 1 : 3);
+
     lastComputerNext ? setGameStart(false) : setGameStart(true);
 
     lastComputerNext ? setIsComputerPlaying(false) : setIsComputerPlaying(true);
@@ -385,8 +388,6 @@ const Game = ({ currentLevel }) => {
   const handleClearGame = () => {
     setXNext(true);
     setlastXNext(true);
-    setXName("");
-    setOName("");
     setPlayerX("X");
     setPlayerO("O");
     setValue(
@@ -394,6 +395,7 @@ const Game = ({ currentLevel }) => {
         ? [Array(9).fill(null)]
         : [Array(25).fill(null)]
     );
+    setTotalReturn(currentLevel === "Level 1" ? 1 : 3);
   };
 
   const onHandleClick = (i) => {
@@ -421,8 +423,9 @@ const Game = ({ currentLevel }) => {
     setGameStart(true);
   };
 
-  const handleSetName = (player) => {
-    player === "X" ? setPlayerX(xName) : setPlayerO(oName);
+
+  const createPlayer = (player, value) => {
+    player === "X" ? setPlayerX(value==="" ? "X" : value) : setPlayerO(value==="" ? "O" : value);
   };
 
   let winResult;
@@ -442,10 +445,13 @@ const Game = ({ currentLevel }) => {
   let header;
 
   winner
-    ? (header = `Winner is ${winner === "X" ? playerX : playerO}`)
+    ? (header = `${t("common:extra.extraWinner")} ${
+        winner === "X" ? playerX : playerO
+      }`)
     : gameOverResult === "Game Over"
-    ? (header = "Game Over")
-    : (header = `Next Player is ${xNext ? playerX : playerO}`);
+    ? (header = t("common:extra.extraGameOver"))
+    : (header = xNext ? `${t("common:extra.extraNext")} ${playerX}` : "...");
+  // : (header = `${t("common:extra.extraNext")} ${xNext ? playerX : playerO}`);
 
   return (
     <>
@@ -458,63 +464,56 @@ const Game = ({ currentLevel }) => {
       />
       <div className="w-100 d-flex justify-content-center">
         <button
-          className="btn btn-outline-warning rounded-pill mt-5 w-25"
+          className={`btn btn-outline-warning rounded-pill mt-5 w-25 ${
+            (totalReturn === 0 || value.length < 3) && "disabled"
+          }`}
           onClick={() => handleReturn(value)}
         >
-          Return
+          <i class="bi bi-arrow-counterclockwise"></i>
         </button>
 
         <button
-          className="btn btn-outline-warning rounded-pill mt-5 w-25"
+          className={`btn btn-outline-warning rounded-pill mt-5  w-25`}
           onClick={handleReset}
         >
-          Reset
+          <i class="bi bi-arrow-repeat"></i>
         </button>
       </div>
 
-      <div className="w-100 my-5 d-flex justify-content-center">
+      <div className="w-100 my-3 d-flex justify-content-center">
         <div className="d-flex flex-column">
           <div className="d-flex align-items-center">
             <input
               className="my-2 rounded-pill p-2 border border-warning"
               type="text"
-              onChange={(e) => setXName(e.target.value)}
-              value={xName}
-              placeholder="Player X"
+              onChange={(e) => createPlayer("X", e.target.value)}
+              placeholder={t("common:extra.extraPlayerXButton")}
               maxLength={10}
             />
-            <span className="my-auto ms-1">
-              <button
-                onClick={() => handleSetName("X")}
-                className="btn btn-outline-warning py-2 rounded-pill"
-              >
-                create
-              </button>
-            </span>
           </div>
-          <div className="d-flex align-items-center">
+          {/* <div className="d-flex align-items-center">
             <input
               className="my-2 rounded-pill p-2 border border-warning"
               type="text"
               onChange={(e) => setOName(e.target.value)}
               value={oName}
-              placeholder="Player O"
+              placeholder={t("common:extra.extraPlayerOButton")}
               maxLength={10}
             />
             <span className="my-auto ms-1">
               <button
                 onClick={() => handleSetName("O")}
-                className="btn btn-outline-warning py-2 rounded-pill"
+                className="btn btn-outline-warning py-1 rounded-pill"
               >
-                create
+                {t("common:extra.extraCreateButton")}
               </button>
             </span>
-          </div>
+          </div> */}
           <button
             onClick={() => handleClearGame()}
-            className="btn btn-outline-warning my-5 rounded-pill"
+            className="btn btn-outline-warning my-3 rounded-pill "
           >
-            Clear game
+           <i class="bi bi-x-lg w-25"></i>
           </button>
         </div>
       </div>
@@ -522,23 +521,31 @@ const Game = ({ currentLevel }) => {
   );
 };
 
-const Player = () => {
+const Player = ({ t }) => {
   const [currentLevel, setcurrentLevel] = useState("Level 1");
+  const [number, setNumber] = useState(currentLevel === "Level 1" ? 1 : 3);
+
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   const handleCurrentLevel = (level) => {
     setcurrentLevel(level);
+    setNumber(level === "Level 1" ? 1 : 3);
+  };
+
+  const updateReturn = (n) => {
+    setNumber(n);
   };
 
   return (
     <>
-      <h2
-        className="animated text-center my-5"
-        data-animation="tracking-in-contract-bck"
-      >
-        Extra
-      </h2>
-      <div className="container pb-5">
-        <div className="d-flex justify-content-end align-items-center mt-4 ">
+      <div className="container pb-5" style={{width: isMobile ? "100%" : "50%"}}>
+        <div className="d-flex justify-content-between align-items-center mt-4 ">
+          <div className="mb-5 d-flex align-items-center">
+            {number}{" "}
+            <span className="ms-1">
+              <i class="bi bi-arrow-counterclockwise fs-3 text-warning"></i>
+            </span>
+          </div>
           <div className="dropdown mb-5">
             <button
               className="btn btn-outline-secondary dropdown-toggle px-2 py-0 rounded-pill"
@@ -546,7 +553,9 @@ const Player = () => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {currentLevel}
+              {currentLevel.includes("1")
+                ? t("common:extra.extraLevel1Button")
+                : t("common:extra.extraLevel2Button")}
             </button>
             <ul className="dropdown-menu">
               <li>
@@ -555,7 +564,7 @@ const Player = () => {
                   className="dropdown-item"
                   type="button"
                 >
-                  Level 1
+                  {t("common:extra.extraLevel1Button")}
                 </button>
               </li>
               <li>
@@ -564,7 +573,7 @@ const Player = () => {
                   className="dropdown-item"
                   type="button"
                 >
-                  Level 2
+                  {t("common:extra.extraLevel2Button")}
                 </button>
               </li>
             </ul>
@@ -572,16 +581,14 @@ const Player = () => {
         </div>
 
         <div>
-          <Game currentLevel={currentLevel} />
+          <Game currentLevel={currentLevel} t={t} updateReturn={updateReturn} />
         </div>
-
-        <div></div>
       </div>
     </>
   );
 };
 
-const won = (value, currentLevel) => {
+const won = (value, currentLevel, symbol = "") => {
   if (currentLevel === "Level 1") {
     const winOutcome = [
       ["0", "1", "2"],
@@ -596,8 +603,14 @@ const won = (value, currentLevel) => {
 
     for (let i = 0; i < winOutcome.length; i++) {
       const [a, b, c] = winOutcome[i];
-      if (value[a] && value[a] === value[b] && value[a] === value[c]) {
-        return [value[a], winOutcome[i]];
+      if (symbol !== "") {
+        if (value[a] === symbol && value[b] === symbol && value[c] === symbol) {
+          return true;
+        }
+      } else {
+        if (value[a] && value[a] === value[b] && value[a] === value[c]) {
+          return [value[a], winOutcome[i]];
+        }
       }
     }
   } else {
@@ -618,14 +631,26 @@ const won = (value, currentLevel) => {
 
     for (let i = 0; i < winOutcome.length; i++) {
       const [a, b, c, d, e] = winOutcome[i];
-      if (
-        value[a] &&
-        value[a] === value[b] &&
-        value[a] === value[c] &&
-        value[a] === value[d] &&
-        value[a] === value[e]
-      ) {
-        return [value[a], winOutcome[i]];
+      if (symbol !== "") {
+        if (
+          value[a] === symbol &&
+          value[b] === symbol &&
+          value[c] === symbol &&
+          value[d] === symbol &&
+          value[e] === symbol
+        ) {
+          return true;
+        }
+      } else {
+        if (
+          value[a] &&
+          value[a] === value[b] &&
+          value[a] === value[c] &&
+          value[a] === value[d] &&
+          value[a] === value[e]
+        ) {
+          return [value[a], winOutcome[i]];
+        }
       }
     }
   }
@@ -694,18 +719,79 @@ const gameOver = (value, currentLevel) => {
 };
 
 const getFreeCells = (value, currentLevel) => {
-  let freeCells = [];
+  const opponent = "X";
+
+  const winningMove = findWinningMove(value, currentLevel, "O");
+  if (winningMove !== -1) {
+    return winningMove;
+  }
+
+  const blockingMove = findWinningMove(value, currentLevel, opponent);
+  if (blockingMove !== -1) {
+    return blockingMove;
+  }
+
+  const center = Math.floor(value.length / 2);
+  if (value[center] === null) {
+    return center;
+  }
+
   if (currentLevel === "Level 1") {
-    for (let i = 0; i < value.length; i++) {
-      value[i] === null && freeCells.push(i);
+    const corners = [0, 2, 6, 8];
+    const availableCorners = corners.filter((corner) => value[corner] === null);
+    if (availableCorners.length > 0) {
+      return getRandomMove(availableCorners);
     }
-  } else {
-    for (let i = 0; i < value.length; i++) {
-      value[i] === null && freeCells.push(i);
+  } else if (currentLevel === "Level 2") {
+    const corners = [0, 4, 20, 24];
+    const availableCorners = corners.filter((corner) => value[corner] === null);
+    if (availableCorners.length > 0) {
+      return getRandomMove(availableCorners);
     }
   }
-  const index = Math.floor(Math.random() * freeCells.length);
-  return freeCells[index];
+
+  if (currentLevel === "Level 1") {
+    const sides = [1, 3, 5, 7];
+    const availableSides = sides.filter((side) => value[side] === null);
+    if (availableSides.length > 0) {
+      return getRandomMove(availableSides);
+    }
+  } else if (currentLevel === "Level 2") {
+    const sides = [1, 9, 10, 14, 15, 19, 21, 22, 23];
+    const availableSides = sides.filter((side) => value[side] === null);
+    if (availableSides.length > 0) {
+      return getRandomMove(availableSides);
+    }
+  }
+
+  return getRandomMove(getEmptyCells(value));
 };
 
-export default animation(Player, ["tracking-in-contract-bck"], [".animated"]);
+const findWinningMove = (value, currentLevel, symbol) => {
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] === null) {
+      const tempBoard = [...value];
+      tempBoard[i] = symbol;
+      if (won(tempBoard, currentLevel, symbol)) {
+        return i;
+      }
+    }
+  }
+  return -1;
+};
+
+const getEmptyCells = (value) => {
+  return value.reduce((emptyCells, cell, index) => {
+    if (cell === null) {
+      emptyCells.push(index);
+    }
+    return emptyCells;
+  }, []);
+};
+
+const getRandomMove = (moves) => {
+  const index = Math.floor(Math.random() * moves.length);
+  return moves[index];
+};
+
+export default Player;

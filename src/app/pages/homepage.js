@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Banner from "../components/Banner";
 import Expertise from "../components/Expertise";
@@ -10,15 +11,16 @@ import useTheme from "../hooks/useTheme";
 
 const Homepage = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   document.body.setAttribute("data-bs-theme", theme);
   return (
     <div id="body" data-bs-theme={theme}>
-      <Navbar />
-      <Banner />
-      <Expertise />
-      <Projects />
-      <Player />
-      <Contacts />
+      <Navbar t={t} />
+      <Banner t={t} />
+      <Expertise t={t} />
+      <Projects t={t} />
+      <Player t={t} />
+      <Contacts t={t} />
       <Footer />
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import animation from "./animation";
 
-const Contacts = () => {
+const Contacts = ({t}) => {
   const contactLinks = [
     {
       icon: "bi-whatsapp",
@@ -22,13 +22,8 @@ const Contacts = () => {
   ];
 
   return (
-    <section id="contacts" className="my-5 pt-5 container-xl ">
-      <h2 className="animated text-center my-5">CONTACTS</h2>
-      <p className="my-5">
-        Most Projects with backends are hosted on servers which idles out if
-        requests aren't made regularly, please be patient while it reboots or
-        contact me below for discussions.
-      </p>
+    <section id="contacts" className="my-5 container-xl ">
+      <h2 className="animated text-center my-5">{t("common:contacts.title")}</h2>
       <div className="container">
         <div className="row">
           {contactLinks.map((link, index) => (
