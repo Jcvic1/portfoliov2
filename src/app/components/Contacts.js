@@ -5,7 +5,7 @@ const Contacts = ({t}) => {
   const contactLinks = [
     {
       icon: "bi-whatsapp",
-      color: "text-primary",
+      color: "text-success",
       href: "https://wa.me/+79038030953",
     },
     {
