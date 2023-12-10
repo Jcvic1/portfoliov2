@@ -25,7 +25,7 @@ const Board = ({ value, currentLevel, winCircle, header, onHandleClick }) => {
 
   return (
     <>
-      {header.includes("Winner") ? (
+      {(header.includes("Winner") || header.includes("Победитель")) ? (
         <h2 className="text-center">
           {header} <i className="bi bi-trophy text-warning"></i>
         </h2>

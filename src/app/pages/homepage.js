@@ -15,7 +15,9 @@ const Homepage = () => {
   document.body.setAttribute("data-bs-theme", theme);
   return (
     <div id="body" data-bs-theme={theme}>
-      <Navbar t={t} />
+      <header className="sticky-top bg-secondary">
+        <Navbar t={t} />
+      </header>
       <Banner t={t} />
       <Expertise t={t} />
       <Projects t={t} />
