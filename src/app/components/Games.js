@@ -302,12 +302,13 @@ const Board = ({ value, currentLevel, winCircle, header, onHandleClick }) => {
   );
 };
 
-const Game = ({ currentLevel, t, updateReturn }) => {
+const Game = ({ currentLevel, t, updateReturn, updateScore }) => {
   const [value, setValue] = useState(
     currentLevel === "Level 1" ? [Array(9).fill(null)] : [Array(25).fill(null)]
   );
   const [xNext, setXNext] = useState(true);
   const [lastXNext, setlastXNext] = useState(true);
+  const [xName, setXName] = useState("");
   const [playerX, setPlayerX] = useState("X");
   const [playerO, setPlayerO] = useState("O");
   const [gameStart, setGameStart] = useState(false);
@@ -364,7 +365,6 @@ const Game = ({ currentLevel, t, updateReturn }) => {
 
   const handleReset = () => {
     lastXNext ? setXNext(false) : setXNext(true);
-
     setlastXNext(!lastXNext);
 
     setValue(
@@ -386,8 +386,14 @@ const Game = ({ currentLevel, t, updateReturn }) => {
   };
 
   const handleClearGame = () => {
-    setXNext(true);
-    setlastXNext(true);
+    updateScore("Both")
+    lastXNext ? setXNext(false) : setXNext(true);
+    setlastXNext(!lastXNext);
+    lastComputerNext ? setGameStart(false) : setGameStart(true);
+    lastComputerNext ? setIsComputerPlaying(false) : setIsComputerPlaying(true);
+    setLastComputerNext(!lastComputerNext);
+    setIsComputerNext(!isComputerNext);
+    setXName("");
     setPlayerX("X");
     setPlayerO("O");
     setValue(
@@ -423,10 +429,12 @@ const Game = ({ currentLevel, t, updateReturn }) => {
     setGameStart(true);
   };
 
-
-  const createPlayer = (player, value) => {
-    player === "X" ? setPlayerX(value==="" ? "X" : value) : setPlayerO(value==="" ? "O" : value);
-  };
+  useEffect(() => {
+    const winResult = won(currentValue, currentLevel);
+    if (winResult) {
+      updateScore(winResult[0] === "X" ? "X" : "O");
+    }
+  }, [currentValue]);
 
   let winResult;
   let gameOverResult;
@@ -469,14 +477,14 @@ const Game = ({ currentLevel, t, updateReturn }) => {
           }`}
           onClick={() => handleReturn(value)}
         >
-          <i class="bi bi-arrow-counterclockwise"></i>
+          <i className="bi bi-arrow-counterclockwise"></i>
         </button>
 
         <button
           className={`btn btn-outline-warning rounded-pill mt-5  w-25`}
           onClick={handleReset}
         >
-          <i class="bi bi-arrow-repeat"></i>
+          <i className="bi bi-arrow-repeat"></i>
         </button>
       </div>
 
@@ -486,7 +494,11 @@ const Game = ({ currentLevel, t, updateReturn }) => {
             <input
               className="my-2 rounded-pill p-2 border border-warning"
               type="text"
-              onChange={(e) => createPlayer("X", e.target.value)}
+              onChange={(e) => {
+                setXName(e.target.value);
+                setPlayerX(e.target.value);
+              }}
+              value={xName}
               placeholder={t("common:extra.extraPlayerXButton")}
               maxLength={10}
             />
@@ -513,7 +525,7 @@ const Game = ({ currentLevel, t, updateReturn }) => {
             onClick={() => handleClearGame()}
             className="btn btn-outline-warning my-3 rounded-pill "
           >
-           <i class="bi bi-x-lg w-25"></i>
+            <i className="bi bi-x-lg w-25"></i>
           </button>
         </div>
       </div>
@@ -523,6 +535,8 @@ const Game = ({ currentLevel, t, updateReturn }) => {
 
 const Player = ({ t }) => {
   const [currentLevel, setcurrentLevel] = useState("Level 1");
+  const [XScore, setXcore] = useState(0);
+  const [OScore, setOcore] = useState(0);
   const [number, setNumber] = useState(currentLevel === "Level 1" ? 1 : 3);
 
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
@@ -536,14 +550,28 @@ const Player = ({ t }) => {
     setNumber(n);
   };
 
+  const updateScore = (player) => {
+    if (player === "X") {
+      setXcore(XScore + 1);
+    } else if (player === "O") {
+      setOcore(OScore + 1);
+    } else {
+      setXcore(0);
+      setOcore(0);
+    }
+  };
+
   return (
     <>
-      <div className="container pb-5" style={{width: isMobile ? "100%" : "50%"}}>
+      <div
+        className="container pb-5"
+        style={{ width: isMobile ? "100%" : "50%" }}
+      >
         <div className="d-flex justify-content-between align-items-center mt-4 ">
           <div className="mb-5 d-flex align-items-center">
             {number}{" "}
             <span className="ms-1">
-              <i class="bi bi-arrow-counterclockwise fs-3 text-warning"></i>
+              <i className="bi bi-arrow-counterclockwise fs-3 text-warning"></i>
             </span>
           </div>
           <div className="dropdown mb-5">
@@ -580,8 +608,21 @@ const Player = ({ t }) => {
           </div>
         </div>
 
+        <div className="w-100 d-flex justify-content-center align-items-center mb-5">
+          <div>
+            <span>{OScore}</span>
+            <span className="mx-5">:</span>
+            <span>{XScore}</span>
+          </div>
+        </div>
+
         <div>
-          <Game currentLevel={currentLevel} t={t} updateReturn={updateReturn} />
+          <Game
+            currentLevel={currentLevel}
+            t={t}
+            updateReturn={updateReturn}
+            updateScore={updateScore}
+          />
         </div>
       </div>
     </>
