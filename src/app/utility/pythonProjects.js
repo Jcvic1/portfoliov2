@@ -19,7 +19,7 @@ const pythonProjects = [
     link: "https://fastapi-hfm1.onrender.com/docs",
   },
   {
-    title: "telegram bot",
+    title: "telegramBot",
     skills: ["Python", "Aiogram"],
     description:
       "A simple telegram bot using aiogram in python to search, play and download music with lyrics.",
