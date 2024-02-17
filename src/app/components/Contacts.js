@@ -11,7 +11,7 @@ const Contacts = ({t}) => {
     {
       icon: "bi-envelope-at-fill",
       color: "text-secondary",
-      href: "mailto:victorjcdon@gmail.com@gmail.com",
+      href: "mailto:victorjcdon@gmail.com",
     },
     { icon: "bi-telephone", color: "text-success", href: "tel:+79038030953" },
     {
