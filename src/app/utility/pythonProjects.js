@@ -18,6 +18,13 @@ const pythonProjects = [
       "A simple fastAPI with CRUD operations using two authentication modes (apiKey and jwt auth authentication).",
     link: "https://fastapi-hfm1.onrender.com/docs",
   },
+  {
+    title: "telegram bot",
+    skills: ["Python", "Aiogram"],
+    description:
+      "A simple telegram bot using aiogram in python to search music, play and download with lyrics.",
+    link: "https://t.me/MuzikwithLyricsbot",
+  },
 ];
 
 export default pythonProjects;
