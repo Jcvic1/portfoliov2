@@ -22,7 +22,7 @@ const pythonProjects = [
     title: "telegram bot",
     skills: ["Python", "Aiogram"],
     description:
-      "A simple telegram bot using aiogram in python to search music, play and download with lyrics.",
+      "A simple telegram bot using aiogram in python to search, play and download music with lyrics.",
     link: "https://t.me/MuzikwithLyricsbot",
   },
 ];
