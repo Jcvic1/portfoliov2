@@ -16,7 +16,7 @@ const siteProjectsData = [
     title: "Website",
     skills: ["HTML", "CSS", "Javascript", "CSS Frameworks(Bootstrap)"],
     description: "A simple cosmetic website with an active form for booking.",
-    link: "https://michibeauty.net",
+    link: "https://michi-beauty.netlify.app/",
   },
   {
     id: "website-two",
