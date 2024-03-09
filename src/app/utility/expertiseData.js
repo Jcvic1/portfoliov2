@@ -1,7 +1,7 @@
 const expertiseData = [
   {
     title: "WebApp",
-    details: ["Flask", "Django", "React", "React Native (Expo)"],
+    details: ["Flask", "Django", "FastAPI", "React", "React Native (Expo)"],
   },
   {
     title: "Website",
