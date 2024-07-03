@@ -4,7 +4,7 @@ const pythonProjects = [
     skills: ["Python", "fastAPI"],
     description:
       "A simple fastAPI with CRUD operations generating movie data on the go and authentication of registered users using JWT, authentication carriers uses cookie or bearer.",
-    link: "https://cinemadb.onrender.com/docs",
+    link: "https://jcvic1-imdbfastapi-v2-8074.twc1.net/docs",
   },
   {
     title: "musicAPI",
