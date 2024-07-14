@@ -14,7 +14,7 @@ const Navbar = ({ t }) => {
   return (
     <div className="container-xl">
       <div className="d-flex justify-content-between pt-3">
-        <div className="fs-3 animated">Obobo Victor</div>
+        <div className="fs-3 animated">Victor JC</div>
         <div className="d-flex ">
           <ToggleLanguage />
           <button

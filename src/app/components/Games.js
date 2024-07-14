@@ -539,7 +539,7 @@ const Player = ({ t }) => {
   const [OScore, setOcore] = useState(0);
   const [number, setNumber] = useState(currentLevel === "Level 1" ? 1 : 3);
 
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   const handleCurrentLevel = (level) => {
     setcurrentLevel(level);
